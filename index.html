@@ -588,7 +588,7 @@
     <!-- Header -->
     <header>
         <div class="logo-section">
-            <button class="menu-btn">☰</button>
+            <button class="menu-btn" onclick="toggleSidebar()">☰</button>
             <a href="#" class="logo" onclick="location.reload(); return false;">
                 <div class="logo-icon">▶</div>
                 <div>Incog<span class="logo-accent">Tube</span></div>
@@ -600,7 +600,7 @@
                 <div class="search-input-wrapper">
                     <input type="text" class="search-input" id="searchInput" 
                            placeholder="Buscar" 
-                           onkeypress="if(event.key==='Enter') searchVideos()">
+                           onkeypress="handleKeyPress(event)">
                 </div>
                 <button class="search-btn" onclick="searchVideos()">🔍</button>
             </div>
@@ -614,9 +614,9 @@
     <!-- Main Container -->
     <div class="main-container">
         <!-- Sidebar -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="nav-section">
-                <div class="nav-item active">
+                <div class="nav-item active" onclick="loadAllVideos()">
                     <span class="nav-icon">🏠</span>
                     <span>Principal</span>
                 </div>
@@ -648,17 +648,17 @@
 
             <div class="nav-section">
                 <div class="nav-section-title">Explorar</div>
-                <div class="nav-item">
-                    <span class="nav-icon">🔥</span>
-                    <span>Tendencias</span>
-                </div>
-                <div class="nav-item">
+                <div class="nav-item" onclick="filterByCategory('música')">
                     <span class="nav-icon">🎵</span>
                     <span>Música</span>
                 </div>
-                <div class="nav-item">
+                <div class="nav-item" onclick="filterByCategory('videojuegos')">
                     <span class="nav-icon">🎮</span>
                     <span>Videojuegos</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-icon">🔥</span>
+                    <span>Tendencias</span>
                 </div>
             </div>
         </aside>
@@ -667,10 +667,10 @@
         <main class="content">
             <!-- Chips -->
             <div class="chips-container">
-                <div class="chip active" onclick="filterCategory('all', this)">Todos</div>
-                <div class="chip" onclick="filterCategory('música', this)">Música</div>
-                <div class="chip" onclick="filterCategory('programación', this)">Programación</div>
-                <div class="chip" onclick="filterCategory('videojuegos', this)">Videojuegos</div>
+                <button class="chip active" onclick="setActiveChip(this); loadAllVideos()">Todos</button>
+                <button class="chip" onclick="setActiveChip(this); filterByCategory('música')">Música</button>
+                <button class="chip" onclick="setActiveChip(this); filterByCategory('programación')">Programación</button>
+                <button class="chip" onclick="setActiveChip(this); filterByCategory('videojuegos')">Videojuegos</button>
             </div>
 
             <!-- Loading -->
@@ -690,8 +690,8 @@
     </div>
 
     <!-- Player Modal -->
-    <div class="player-modal" id="playerModal">
-        <div class="player-wrapper">
+    <div class="player-modal" id="playerModal" onclick="closePlayerOnBackground(event)">
+        <div class="player-wrapper" onclick="event.stopPropagation()">
             <button class="close-player" onclick="closePlayer()">✕</button>
             <div class="player-container">
                 <iframe id="videoPlayer" allowfullscreen 
@@ -699,7 +699,7 @@
                 </iframe>
             </div>
         </div>
-        <div class="player-info">
+        <div class="player-info" onclick="event.stopPropagation()">
             <h2 class="player-title" id="playerTitle">Título del video</h2>
             <p class="player-channel" id="playerChannel">Nombre del canal</p>
         </div>
@@ -707,8 +707,6 @@
 
     <script>
         // Base de datos de videos
-        const videoDatabase = [
+        var videoDatabase = [
             { id: 'dQw4w9WgXcQ', title: 'Rick Astley - Never Gonna Give You Up', channel: 'Rick Astley', views: '1.4B vistas', duration: '3:33', category: 'música' },
-            { id: '9bZkp7q19f0', title: 'PSY - GANGNAM STYLE', channel: 'officialpsy', views: '4.9B vistas', duration: '4:12', category: 'música' },
-            { id: 'kJQP7kiw5Fk', title: 'Luis Fonsi - Despacito ft. Daddy Yankee', channel: 'Luis Fonsi', views: '8.2B vistas', duration: '4:41', category: 'música' },
-            { id: 'RgKAFK5djSk', title: 'Wiz Khalifa - See You Again ft. Charlie Puth', channel: 'Wiz Khalifa', views: '6.0B vistas'
+            { id: '9bZkp7q19f0', title: 'PSY - GANGNAM STYLE', channel: 'officialpsy', views: '4.9B vistas', duration: '4:12', cate
