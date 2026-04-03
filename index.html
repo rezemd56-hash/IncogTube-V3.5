@@ -280,6 +280,8 @@
             white-space: nowrap;
             transition: all 0.2s;
             user-select: none;
+            border: none;
+            font-family: inherit;
         }
 
         .chip:hover {
@@ -290,7 +292,6 @@
         .chip.active {
             background-color: var(--text-primary);
             color: var(--bg-primary);
-            border-color: var(--text-primary);
         }
 
         /* Videos Grid */
@@ -397,7 +398,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0,0,0,0.95);
+            background-color: rgba(0,0,0,0.98);
             z-index: 2000;
             padding: 20px;
         }
@@ -411,7 +412,7 @@
 
         .player-wrapper {
             width: 100%;
-            max-width: 1000px;
+            max-width: 1200px;
             position: relative;
         }
 
@@ -421,9 +422,11 @@
             height: 0;
             overflow: hidden;
             border-radius: 12px;
+            background: #000;
         }
 
-        .player-container iframe {
+        .player-container iframe,
+        .player-container video {
             position: absolute;
             top: 0;
             left: 0;
@@ -457,7 +460,7 @@
 
         .player-info {
             width: 100%;
-            max-width: 1000px;
+            max-width: 1200px;
             margin-top: 20px;
             padding: 20px;
             background-color: var(--bg-secondary);
@@ -495,9 +498,10 @@
         /* Loading */
         .loading {
             display: none;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 200px;
+            height: 300px;
             color: var(--text-secondary);
             font-size: 16px;
             grid-column: 1 / -1;
@@ -508,35 +512,51 @@
         }
 
         .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--border-color);
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border-color);
             border-top-color: var(--accent-purple);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-right: 15px;
+            margin-bottom: 15px;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
-        /* Message */
-        .message {
+        /* Error Message */
+        .error-message {
             text-align: center;
             padding: 60px 20px;
             color: var(--text-secondary);
             grid-column: 1 / -1;
         }
 
-        .message-icon {
+        .error-icon {
             font-size: 48px;
             margin-bottom: 16px;
         }
 
-        .message h3 {
+        .error-message h3 {
             color: var(--text-primary);
             margin-bottom: 8px;
+        }
+
+        .retry-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: var(--accent-purple);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .retry-btn:hover {
+            background-color: var(--accent-purple-hover);
         }
 
         /* Responsive */
@@ -599,7 +619,7 @@
             <div class="search-container">
                 <div class="search-input-wrapper">
                     <input type="text" class="search-input" id="searchInput" 
-                           placeholder="Buscar" 
+                           placeholder="Buscar videos..." 
                            onkeypress="handleKeyPress(event)">
                 </div>
                 <button class="search-btn" onclick="searchVideos()">🔍</button>
@@ -616,7 +636,7 @@
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="nav-section">
-                <div class="nav-item active" onclick="loadAllVideos()">
+                <div class="nav-item active" onclick="loadTrending()">
                     <span class="nav-icon">🏠</span>
                     <span>Principal</span>
                 </div>
@@ -640,25 +660,21 @@
                     <span class="nav-icon">📁</span>
                     <span>Playlists</span>
                 </div>
-                <div class="nav-item">
-                    <span class="nav-icon">🎥</span>
-                    <span>Tus videos</span>
-                </div>
             </div>
 
             <div class="nav-section">
                 <div class="nav-section-title">Explorar</div>
-                <div class="nav-item" onclick="filterByCategory('música')">
+                <div class="nav-item" onclick="searchByCategory('music')">
                     <span class="nav-icon">🎵</span>
                     <span>Música</span>
                 </div>
-                <div class="nav-item" onclick="filterByCategory('videojuegos')">
+                <div class="nav-item" onclick="searchByCategory('gaming')">
                     <span class="nav-icon">🎮</span>
                     <span>Videojuegos</span>
                 </div>
-                <div class="nav-item">
-                    <span class="nav-icon">🔥</span>
-                    <span>Tendencias</span>
+                <div class="nav-item" onclick="searchByCategory('tech')">
+                    <span class="nav-icon">💻</span>
+                    <span>Tecnología</span>
                 </div>
             </div>
         </aside>
@@ -667,16 +683,17 @@
         <main class="content">
             <!-- Chips -->
             <div class="chips-container">
-                <button class="chip active" onclick="setActiveChip(this); loadAllVideos()">Todos</button>
-                <button class="chip" onclick="setActiveChip(this); filterByCategory('música')">Música</button>
-                <button class="chip" onclick="setActiveChip(this); filterByCategory('programación')">Programación</button>
-                <button class="chip" onclick="setActiveChip(this); filterByCategory('videojuegos')">Videojuegos</button>
+                <button class="chip active" onclick="setActiveChip(this); loadTrending()">Todos</button>
+                <button class="chip" onclick="setActiveChip(this); searchByCategory('music')">Música</button>
+                <button class="chip" onclick="setActiveChip(this); searchByCategory('gaming')">Videojuegos</button>
+                <button class="chip" onclick="setActiveChip(this); searchByCategory('programming')">Programación</button>
+                <button class="chip" onclick="setActiveChip(this); searchByCategory('news')">Noticias</button>
             </div>
 
             <!-- Loading -->
             <div class="loading" id="loading">
                 <div class="spinner"></div>
-                <span>Buscando videos...</span>
+                <span>Cargando videos...</span>
             </div>
 
             <!-- Videos Grid -->
@@ -693,20 +710,11 @@
     <div class="player-modal" id="playerModal" onclick="closePlayerOnBackground(event)">
         <div class="player-wrapper" onclick="event.stopPropagation()">
             <button class="close-player" onclick="closePlayer()">✕</button>
-            <div class="player-container">
-                <iframe id="videoPlayer" allowfullscreen 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
+            <div class="player-container" id="playerContainer">
+                <!-- El reproductor se inserta aquí -->
             </div>
         </div>
         <div class="player-info" onclick="event.stopPropagation()">
             <h2 class="player-title" id="playerTitle">Título del video</h2>
             <p class="player-channel" id="playerChannel">Nombre del canal</p>
-        </div>
-    </div>
-
-    <script>
-        // Base de datos de videos
-        var videoDatabase = [
-            { id: 'dQw4w9WgXcQ', title: 'Rick Astley - Never Gonna Give You Up', channel: 'Rick Astley', views: '1.4B vistas', duration: '3:33', category: 'música' },
-            { id: '9bZkp7q19f0', title: 'PSY - GANGNAM STYLE', channel: 'officialpsy', views: '4.9B vistas', duration: '4:12', cate
+  
